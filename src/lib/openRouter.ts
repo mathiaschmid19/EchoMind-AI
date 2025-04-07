@@ -1,4 +1,5 @@
 
+
 export interface OpenRouterResponse {
   id: string;
   choices: {
@@ -25,10 +26,10 @@ export async function sendMessageToOpenRouter(messages: any[]) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_KEY}`,
         'HTTP-Referer': window.location.href,
-        'X-Title': 'Claude Clone'
+        'X-Title': 'Qwen Clone'
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3-haiku',
+        model: 'qwen/qwen2.5-vl-72b-instruct:free',
         messages: messages,
       }),
     });

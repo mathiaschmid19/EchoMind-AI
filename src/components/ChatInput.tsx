@@ -55,7 +55,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isDisabled = false
           </button>
         </div>
         <div className="text-xs text-center mt-2 text-claude-textSecondary">
-          Claude 3.7 Sonnet
+          Qwen 2.5 VL 72B
         </div>
       </div>
     </div>

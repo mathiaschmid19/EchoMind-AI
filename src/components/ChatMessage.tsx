@@ -19,7 +19,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, role, timestamp }) =
           <div className="mr-4 mt-1">
             {role === 'assistant' ? (
               <div className="h-8 w-8 rounded-full bg-claude-accent flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">C</span>
+                <span className="text-white font-semibold text-sm">Q</span>
               </div>
             ) : (
               <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
@@ -32,7 +32,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, role, timestamp }) =
           <div className="flex-1">
             <div className="flex items-center mb-1">
               <div className="font-medium text-sm text-claude-textPrimary">
-                {role === 'assistant' ? 'Claude' : 'You'}
+                {role === 'assistant' ? 'Qwen' : 'You'}
               </div>
               {timestamp && (
                 <div className="text-xs text-claude-textSecondary ml-2">
