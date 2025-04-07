@@ -2,6 +2,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ChatMessage, { MessageRole } from './ChatMessage';
 import ChatInput from './ChatInput';
+import ApiKeyInput from './ApiKeyInput';
+import { sendMessageToOpenRouter } from '@/lib/openRouter';
+import { toast } from 'sonner';
 
 interface Message {
   id: string;
@@ -19,6 +22,7 @@ const ChatContainer: React.FC = () => {
       timestamp: '2:34 PM',
     }
   ]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -30,41 +34,52 @@ const ChatContainer: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = (content: string) => {
+  const getFormattedTime = () => {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleSendMessage = async (content: string) => {
+    // Add user message to chat
     const newUserMessage: Message = {
       id: Date.now().toString(),
       content,
       role: 'user',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: getFormattedTime(),
     };
     
-    setMessages([...messages, newUserMessage]);
+    setMessages(prev => [...prev, newUserMessage]);
+    setIsLoading(true);
     
-    // Simulate Claude's response
-    setTimeout(() => {
-      const responses = [
-        "I'd be happy to help with that. Let's explore some solutions together.",
-        "That's an interesting question. Here's what I think...",
-        "I understand what you're asking. Based on my knowledge, I can tell you that...",
-        "Thanks for sharing that with me. I have a few thoughts on this topic.",
-        "I can definitely help you with this request. Let me provide some information."
-      ];
+    try {
+      // Prepare messages for OpenRouter API (only include content and role)
+      const apiMessages = messages.concat(newUserMessage).map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
       
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      // Send request to OpenRouter
+      const response = await sendMessageToOpenRouter(apiMessages);
       
-      const newAssistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: randomResponse,
+      // Add assistant response
+      const assistantMessage: Message = {
+        id: response.id || (Date.now() + 1).toString(),
+        content: response.choices[0].message.content,
         role: 'assistant',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: getFormattedTime(),
       };
       
-      setMessages(prev => [...prev, newAssistantMessage]);
-    }, 1000);
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Error getting response:', error);
+      toast.error('Failed to get a response. Please check your API key.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden bg-white">
+      <ApiKeyInput />
       <div className="flex-1 overflow-y-auto pb-24">
         <div className="py-4 px-4 text-center">
           <div className="inline-block rounded-full bg-claude-accent/10 px-3 py-1 text-sm text-claude-accent">
@@ -80,10 +95,30 @@ const ChatContainer: React.FC = () => {
             timestamp={message.timestamp}
           />
         ))}
+        
+        {isLoading && (
+          <div className="py-6 bg-white animate-pulse">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6">
+              <div className="flex items-start">
+                <div className="mr-4 mt-1">
+                  <div className="h-8 w-8 rounded-full bg-claude-accent flex items-center justify-center">
+                    <span className="text-white font-semibold text-sm">C</span>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
+                  <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <div ref={messagesEndRef} />
       </div>
       
-      <ChatInput onSendMessage={handleSendMessage} />
+      <ChatInput onSendMessage={handleSendMessage} isDisabled={isLoading} />
     </div>
   );
 };
