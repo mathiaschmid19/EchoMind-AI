@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import ChatMessage, { MessageRole } from './ChatMessage';
 import ChatInput from './ChatInput';
@@ -90,7 +89,9 @@ const ChatContainer: React.FC = () => {
     <div className="flex-1 flex flex-col h-screen overflow-hidden bg-white">
       <ApiKeyInput />
       <div className="flex-1 overflow-y-auto pb-24">
-        <ModelSelector selectedModel={selectedModel} onModelChange={handleModelChange} />
+        <div className="flex justify-start">
+          <ModelSelector selectedModel={selectedModel} onModelChange={handleModelChange} />
+        </div>
         
         {messages.map((message) => (
           <ChatMessage 

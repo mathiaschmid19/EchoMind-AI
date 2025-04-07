@@ -15,12 +15,17 @@ interface ModelSelectorProps {
 }
 
 const ModelSelector: React.FC<ModelSelectorProps> = ({ selectedModel, onModelChange }) => {
+  // Find the selected model name
+  const selectedModelName = availableModels.find(model => model.id === selectedModel)?.name || '';
+  
   return (
-    <div className="py-4 px-4 text-center">
-      <div className="inline-block rounded-full bg-claude-accent/10 px-3 py-1">
+    <div className="py-4 px-4">
+      <div className="inline-block rounded-full bg-purple-600/80 px-3 py-1">
         <Select value={selectedModel} onValueChange={onModelChange}>
-          <SelectTrigger className="w-[180px] border-none bg-transparent">
-            <SelectValue placeholder="Select Model" />
+          <SelectTrigger className="w-[180px] border-none bg-transparent text-white">
+            <SelectValue placeholder="Select Model">
+              {selectedModelName}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {availableModels.map((model) => (
