@@ -11,6 +11,9 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ content, role, timestamp }) => {
+  // Get the first letter of the model name (will be displayed in avatar)
+  const modelInitial = role === 'assistant' ? 'A' : null;
+  
   return (
     <div className={`py-6 ${role === 'assistant' ? 'bg-white' : 'bg-[#F7F7F8]'} animate-fade-in`}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
@@ -19,7 +22,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, role, timestamp }) =
           <div className="mr-4 mt-1">
             {role === 'assistant' ? (
               <div className="h-8 w-8 rounded-full bg-claude-accent flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">Q</span>
+                <span className="text-white font-semibold text-sm">{modelInitial}</span>
               </div>
             ) : (
               <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
@@ -32,7 +35,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, role, timestamp }) =
           <div className="flex-1">
             <div className="flex items-center mb-1">
               <div className="font-medium text-sm text-claude-textPrimary">
-                {role === 'assistant' ? 'Qwen' : 'You'}
+                {role === 'assistant' ? 'AI Assistant' : 'You'}
               </div>
               {timestamp && (
                 <div className="text-xs text-claude-textSecondary ml-2">

@@ -1,61 +1,54 @@
 
 import React, { useState } from 'react';
-import { PaperclipIcon, SendIcon } from 'lucide-react';
+import { SendHorizonal } from 'lucide-react';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   isDisabled?: boolean;
+  modelName?: string;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isDisabled = false }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ 
+  onSendMessage, 
+  isDisabled = false,
+  modelName = 'AI'
+}) => {
   const [message, setMessage] = useState('');
 
-  const handleSend = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (message.trim() && !isDisabled) {
       onSendMessage(message);
       setMessage('');
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
   return (
-    <div className="border-t border-gray-200 bg-white py-4 sticky bottom-0">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
-        <div className="bg-claude-inputBg rounded-lg flex items-start">
-          <button 
-            className="p-3 text-gray-500 hover:text-gray-700" 
-            aria-label="Attach file"
-            disabled={isDisabled}
-          >
-            <PaperclipIcon className="h-5 w-5" />
-          </button>
-          <textarea
-            className="flex-grow bg-transparent py-3 px-1 focus:outline-none resize-none h-12 max-h-60 text-sm"
-            placeholder={isDisabled ? "Waiting for response..." : "How can I help you today?"}
+    <div className="absolute bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4">
+      <div className="max-w-3xl mx-auto">
+        <form onSubmit={handleSubmit} className="relative">
+          <input
+            type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            rows={1}
-            style={{ minHeight: '24px', height: 'auto' }}
+            placeholder="Message..."
+            className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-claude-accent focus:border-transparent"
             disabled={isDisabled}
           />
-          <button 
-            className={`p-3 ${message.trim() && !isDisabled ? 'text-claude-accent' : 'text-gray-400'}`}
-            onClick={handleSend}
+          <button
+            type="submit"
+            className={`absolute right-3 top-1/2 transform -translate-y-1/2 rounded-lg p-1 ${
+              message.trim() && !isDisabled
+                ? 'bg-claude-accent text-white'
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            }`}
             disabled={!message.trim() || isDisabled}
-            aria-label="Send message"
           >
-            <SendIcon className="h-5 w-5" />
+            <SendHorizonal className="h-5 w-5" />
           </button>
-        </div>
+        </form>
         <div className="text-xs text-center mt-2 text-claude-textSecondary">
-          Qwen 2.5 VL 72B
+          {modelName}
         </div>
       </div>
     </div>

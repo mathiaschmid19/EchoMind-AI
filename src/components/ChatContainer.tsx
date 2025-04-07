@@ -3,8 +3,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import ChatMessage, { MessageRole } from './ChatMessage';
 import ChatInput from './ChatInput';
 import ApiKeyInput from './ApiKeyInput';
-import { sendMessageToOpenRouter } from '@/lib/openRouter';
+import { sendMessageToOpenRouter, availableModels } from '@/lib/openRouter';
 import { toast } from 'sonner';
+import ModelSelector from './ModelSelector';
 
 interface Message {
   id: string;
@@ -23,6 +24,7 @@ const ChatContainer: React.FC = () => {
     }
   ]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedModel, setSelectedModel] = useState<string>(availableModels[0].id);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -36,6 +38,10 @@ const ChatContainer: React.FC = () => {
 
   const getFormattedTime = () => {
     return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleModelChange = (modelId: string) => {
+    setSelectedModel(modelId);
   };
 
   const handleSendMessage = async (content: string) => {
@@ -57,8 +63,8 @@ const ChatContainer: React.FC = () => {
         content: msg.content
       }));
       
-      // Send request to OpenRouter
-      const response = await sendMessageToOpenRouter(apiMessages);
+      // Send request to OpenRouter with selected model
+      const response = await sendMessageToOpenRouter(apiMessages, selectedModel);
       
       // Add assistant response
       const assistantMessage: Message = {
@@ -77,15 +83,14 @@ const ChatContainer: React.FC = () => {
     }
   };
 
+  // Find the currently selected model name for the UI
+  const selectedModelName = availableModels.find(m => m.id === selectedModel)?.name || 'AI';
+
   return (
     <div className="flex-1 flex flex-col h-screen overflow-hidden bg-white">
       <ApiKeyInput />
       <div className="flex-1 overflow-y-auto pb-24">
-        <div className="py-4 px-4 text-center">
-          <div className="inline-block rounded-full bg-claude-accent/10 px-3 py-1 text-sm text-claude-accent">
-            🌟 Mathias returns!
-          </div>
-        </div>
+        <ModelSelector selectedModel={selectedModel} onModelChange={handleModelChange} />
         
         {messages.map((message) => (
           <ChatMessage 
@@ -102,7 +107,7 @@ const ChatContainer: React.FC = () => {
               <div className="flex items-start">
                 <div className="mr-4 mt-1">
                   <div className="h-8 w-8 rounded-full bg-claude-accent flex items-center justify-center">
-                    <span className="text-white font-semibold text-sm">C</span>
+                    <span className="text-white font-semibold text-sm">Q</span>
                   </div>
                 </div>
                 <div className="flex-1">
@@ -118,7 +123,7 @@ const ChatContainer: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
       
-      <ChatInput onSendMessage={handleSendMessage} isDisabled={isLoading} />
+      <ChatInput onSendMessage={handleSendMessage} isDisabled={isLoading} modelName={selectedModelName} />
     </div>
   );
 };

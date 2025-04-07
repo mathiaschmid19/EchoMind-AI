@@ -1,5 +1,4 @@
 
-
 export interface OpenRouterResponse {
   id: string;
   choices: {
@@ -12,7 +11,36 @@ export interface OpenRouterResponse {
   model: string;
 }
 
-export async function sendMessageToOpenRouter(messages: any[]) {
+export interface ModelOption {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export const availableModels: ModelOption[] = [
+  {
+    id: 'qwen/qwen2.5-vl-72b-instruct:free',
+    name: 'Qwen 2.5',
+    description: 'Alibaba\'s visual language model'
+  },
+  {
+    id: 'meta-llama/llama-4-maverick:free',
+    name: 'Llama 4',
+    description: 'Meta\'s latest Llama model'
+  },
+  {
+    id: 'google/gemini-2.5-pro-exp-03-25:free',
+    name: 'Gemini 2.5',
+    description: 'Google\'s multimodal model'
+  },
+  {
+    id: 'deepseek/deepseek-chat-v3-0324:free',
+    name: 'DeepSeek Chat',
+    description: 'DeepSeek\'s conversation model'
+  }
+];
+
+export async function sendMessageToOpenRouter(messages: any[], modelId: string) {
   const API_KEY = localStorage.getItem('openrouter_api_key');
   
   if (!API_KEY) {
@@ -29,7 +57,7 @@ export async function sendMessageToOpenRouter(messages: any[]) {
         'X-Title': 'Qwen Clone'
       },
       body: JSON.stringify({
-        model: 'qwen/qwen2.5-vl-72b-instruct:free',
+        model: modelId,
         messages: messages,
       }),
     });
