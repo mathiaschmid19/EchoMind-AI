@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,13 +62,13 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				claude: {
-					sidebar: '#1A1F2C',
-					accent: '#FF8C42',
+				echomind: {
+					sidebar: '#1E3A8A',
+					accent: '#3B82F6',
 					messageArea: '#FFFFFF',
-					inputBg: '#F7F7F8',
-					textPrimary: '#111111',
-					textSecondary: '#6B6F76',
+					inputBg: '#F9FAFB',
+					textPrimary: '#1F2937',
+					textSecondary: '#6B7280',
 				}
 			},
 			borderRadius: {
