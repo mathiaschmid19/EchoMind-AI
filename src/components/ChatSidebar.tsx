@@ -227,11 +227,39 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
 
       {/* User section */}
       <div className="p-3 border-t border-white/10">
-        <div className="flex items-center text-gray-300 text-sm">
-          <div className="h-7 w-7 rounded-full bg-white/20 flex items-center justify-center mr-2">
-            <User className="h-4 w-4" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mr-2 overflow-hidden">
+              <img
+                src="https://ui-avatars.com/api/?name=User&background=3B82F6&color=fff"
+                alt="Profile"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-white text-sm font-medium">John Doe</span>
+              <span className="text-gray-400 text-xs">Free Plan</span>
+            </div>
           </div>
-          <span>Free plan</span>
+          <button
+            className="p-1.5 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors"
+            aria-label="Settings"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
