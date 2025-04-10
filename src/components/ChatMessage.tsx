@@ -129,6 +129,175 @@ const detectLanguage = (code: string): string => {
   return "text";
 };
 
+const formatText = (text: string, isUser: boolean) => {
+  // Split into paragraphs
+  const paragraphs = text.split("\n\n");
+
+  return paragraphs.map((paragraph, index) => {
+    // Handle headings
+    if (paragraph.startsWith("### ")) {
+      return (
+        <h3
+          key={index}
+          className={`text-base leading-6 font-bold my-4 ${
+            isUser ? "text-white" : "text-gray-800"
+          }`}
+        >
+          {paragraph.slice(4)}
+        </h3>
+      );
+    }
+
+    // Handle h4 headings
+    if (paragraph.startsWith("#### ")) {
+      return (
+        <h4
+          key={index}
+          className={`text-sm leading-6 font-semibold my-3 ${
+            isUser ? "text-white" : "text-gray-800"
+          }`}
+        >
+          {paragraph.slice(5)}
+        </h4>
+      );
+    }
+
+    // Handle bold text
+    if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
+      return (
+        <p
+          key={index}
+          className={`my-2 font-bold ${
+            isUser ? "text-white" : "text-gray-800"
+          }`}
+        >
+          {paragraph.slice(2, -2)}
+        </p>
+      );
+    }
+
+    // Handle inline code
+    if (paragraph.startsWith("`") && paragraph.endsWith("`")) {
+      const code = paragraph.slice(1, -1);
+      return (
+        <code
+          key={index}
+          className={`px-1.5 py-0.5 rounded bg-gray-100 font-mono text-sm ${
+            isUser ? "text-white" : "text-gray-800"
+          }`}
+        >
+          {code}
+        </code>
+      );
+    }
+
+    // Handle tables
+    if (paragraph.includes("|") && paragraph.includes("-")) {
+      const lines = paragraph.split("\n").filter((line) => line.trim());
+      if (lines.length < 2) return null;
+
+      const header = lines[0]
+        .split("|")
+        .map((cell) => cell.trim())
+        .filter(Boolean);
+
+      const rows = lines.slice(2).map((line) =>
+        line
+          .split("|")
+          .map((cell) => cell.trim())
+          .filter(Boolean)
+      );
+
+      return (
+        <div key={index} className="my-4 overflow-x-auto">
+          <table
+            className={`min-w-full border-collapse ${
+              isUser ? "text-white" : "text-gray-800"
+            }`}
+          >
+            <thead>
+              <tr className="border-b border-gray-200">
+                {header.map((cell, i) => (
+                  <th
+                    key={i}
+                    className={`px-4 py-2 text-left font-semibold text-sm ${
+                      isUser ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    {cell.replace(/\*\*/g, "")}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className={`border-b border-gray-200 ${
+                    rowIndex % 2 === 0
+                      ? isUser
+                        ? "bg-blue-600/10"
+                        : "bg-gray-50"
+                      : ""
+                  }`}
+                >
+                  {row.map((cell, cellIndex) => (
+                    <td
+                      key={cellIndex}
+                      className={`px-4 py-2 text-sm ${
+                        isUser ? "text-white" : "text-gray-800"
+                      }`}
+                    >
+                      {cell.replace(/\*\*/g, "")}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+
+    // Handle lists
+    if (paragraph.startsWith("- ") || paragraph.startsWith("* ")) {
+      const items = paragraph.split("\n");
+      return (
+        <ul key={index} className="list-disc list-inside my-2 space-y-1">
+          {items.map((item, i) => (
+            <li key={i} className={isUser ? "text-white" : "text-gray-800"}>
+              {item.replace(/^[-*]\s+/, "")}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+
+    // Regular paragraph with potential bold text
+    const formattedParagraph = paragraph
+      .split(/(\*\*.*?\*\*)/)
+      .map((part, i) => {
+        if (part.startsWith("**") && part.endsWith("**")) {
+          return (
+            <span key={i} className="font-bold">
+              {part.slice(2, -2)}
+            </span>
+          );
+        }
+        return part;
+      });
+
+    return (
+      <p
+        key={index}
+        className={`my-2 ${isUser ? "text-white" : "text-gray-800"}`}
+      >
+        {formattedParagraph}
+      </p>
+    );
+  });
+};
+
 const formatMessage = (content: string, isUser: boolean) => {
   // Check if the content contains code blocks
   const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
@@ -170,143 +339,7 @@ const formatMessage = (content: string, isUser: boolean) => {
   return parts.map((part, index) => {
     if (part.type === "text") {
       // Handle regular text content
-      const paragraphs = part.content.split("\n\n");
-      return paragraphs.map((paragraph, pIndex) => {
-        // Handle h3 headings
-        if (paragraph.startsWith("### ")) {
-          return (
-            <h3
-              key={`${index}-${pIndex}`}
-              className={`text-base leading-6 font-bold my-4 ${
-                isUser ? "text-white" : "text-gray-800"
-              }`}
-            >
-              {paragraph.slice(4)}
-            </h3>
-          );
-        }
-
-        // Handle h4 headings
-        if (paragraph.startsWith("#### ")) {
-          return (
-            <h4
-              key={`${index}-${pIndex}`}
-              className={`text-sm leading-6 font-semibold my-3 ${
-                isUser ? "text-white" : "text-gray-800"
-              }`}
-            >
-              {paragraph.slice(5)}
-            </h4>
-          );
-        }
-
-        // Handle bold text
-        if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
-          return (
-            <p
-              key={`${index}-${pIndex}`}
-              className={`my-2 font-bold ${
-                isUser ? "text-white" : "text-gray-800"
-              }`}
-            >
-              {paragraph.slice(2, -2)}
-            </p>
-          );
-        }
-
-        // Handle inline code
-        if (paragraph.startsWith("`") && paragraph.endsWith("`")) {
-          const code = paragraph.slice(1, -1);
-          return (
-            <code
-              key={`${index}-${pIndex}`}
-              className={`px-1.5 py-0.5 rounded bg-gray-100 font-mono text-sm ${
-                isUser ? "text-white" : "text-gray-800"
-              }`}
-            >
-              {code}
-            </code>
-          );
-        }
-
-        // Handle tables
-        if (paragraph.includes("|") && paragraph.includes("-")) {
-          const lines = paragraph.split("\n").filter((line) => line.trim());
-          if (lines.length < 2) return null;
-
-          const header = lines[0]
-            .split("|")
-            .map((cell) => cell.trim())
-            .filter(Boolean);
-
-          const rows = lines.slice(2).map((line) =>
-            line
-              .split("|")
-              .map((cell) => cell.trim())
-              .filter(Boolean)
-          );
-
-          return (
-            <div key={index} className="my-4 overflow-x-auto">
-              <table
-                className={`min-w-full border-collapse ${
-                  isUser ? "text-white" : "text-gray-800"
-                }`}
-              >
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    {header.map((cell, i) => (
-                      <th
-                        key={i}
-                        className={`px-4 py-2 text-left font-semibold text-sm ${
-                          isUser ? "text-white" : "text-gray-800"
-                        }`}
-                      >
-                        {cell.replace(/\*\*/g, "")}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row, rowIndex) => (
-                    <tr
-                      key={rowIndex}
-                      className={`border-b border-gray-200 ${
-                        rowIndex % 2 === 0
-                          ? isUser
-                            ? "bg-blue-600/10"
-                            : "bg-gray-50"
-                          : ""
-                      }`}
-                    >
-                      {row.map((cell, cellIndex) => (
-                        <td
-                          key={cellIndex}
-                          className={`px-4 py-2 text-sm ${
-                            isUser ? "text-white" : "text-gray-800"
-                          }`}
-                        >
-                          {cell.replace(/\*\*/g, "")}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          );
-        }
-
-        // Handle regular paragraphs
-        return (
-          <p
-            key={`${index}-${pIndex}`}
-            className={`my-2 ${isUser ? "text-white" : "text-gray-800"}`}
-          >
-            {paragraph}
-          </p>
-        );
-      });
+      return formatText(part.content, isUser);
     } else if (part.type === "code") {
       // Handle code blocks
       return (
