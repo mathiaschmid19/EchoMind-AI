@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { PlusCircle, MessageSquare, User, Trash2 } from "lucide-react";
+import {
+  PlusCircle,
+  MessageSquare,
+  User,
+  Trash2,
+  Settings,
+  LogIn,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import SettingsPopup from "./SettingsPopup";
+import { useAuth, useUser } from "@clerk/clerk-react";
+import { useClerk } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 
 interface ChatHistoryItem {
   id: string;
@@ -24,6 +35,11 @@ const CURRENT_CHAT_ID_KEY = "chatty-mimic-current-chat";
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
   const [recentChats, setRecentChats] = useState<ChatHistoryItem[]>([]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [initialActiveTab, setInitialActiveTab] = useState("api");
+  const { isSignedIn } = useAuth();
+  const { user } = useUser();
+  const { openSignIn, openSignUp } = useClerk();
 
   // Load chat history from localStorage
   useEffect(() => {
@@ -154,10 +170,10 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
   };
 
   return (
-    <div className="w-64 bg-blue-900 h-screen flex flex-col">
+    <div className="w-64 bg-blue-900 dark:bg-gray-800 h-screen flex flex-col">
       {/* Sidebar header */}
       <div className="p-4 flex items-center">
-        <div className="text-white font-medium flex items-center">
+        <div className="text-white dark:text-gray-100 font-medium flex items-center">
           <span className="mr-2">
             <svg
               width="20"
@@ -166,7 +182,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M12 2L1 12L12 22L23 12L12 2Z" fill="white" />
+              <path d="M12 2L1 12L12 22L23 12L12 2Z" fill="currentColor" />
             </svg>
           </span>
           EchoMind
@@ -177,7 +193,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
       <div className="p-2">
         <button
           onClick={handleNewChat}
-          className="flex items-center justify-center w-full rounded-md bg-blue-700 text-white py-2 px-3 text-sm hover:bg-blue-600 transition-colors"
+          className="flex items-center justify-center w-full rounded-md bg-blue-700 dark:bg-blue-600 text-white py-2 px-3 text-sm hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors"
         >
           <PlusCircle className="h-4 w-4 mr-2" /> New chat
         </button>
@@ -186,8 +202,10 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
       {/* Chats section */}
       <div className="mt-4 px-2">
         <div className="flex items-center px-2 mb-2">
-          <MessageSquare className="h-4 w-4 text-gray-400 mr-2" />
-          <span className="text-gray-400 text-sm">Chats</span>
+          <MessageSquare className="h-4 w-4 text-gray-400 dark:text-gray-500 mr-2" />
+          <span className="text-gray-400 dark:text-gray-500 text-sm">
+            Chats
+          </span>
         </div>
       </div>
 
@@ -226,42 +244,87 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
       </div>
 
       {/* User section */}
-      <div className="p-3 border-t border-white/10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mr-2 overflow-hidden">
-              <img
-                src="https://ui-avatars.com/api/?name=User&background=3B82F6&color=fff"
-                alt="Profile"
-                className="h-full w-full object-cover"
-              />
+      <div className="p-4 border-t border-blue-800">
+        {isSignedIn ? (
+          <div className="flex items-center justify-start">
+            <button
+              onClick={() => {
+                setInitialActiveTab("account");
+                setIsSettingsOpen(true);
+              }}
+              className="flex items-center group hover:bg-blue-800/30 rounded-lg p-2 -ml-2 transition-colors w-full"
+            >
+              <div className="flex items-center">
+                {user?.imageUrl ? (
+                  <img
+                    src={user.imageUrl}
+                    alt="Profile"
+                    className="h-8 w-8 rounded-full object-cover mr-2"
+                  />
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-blue-700 flex items-center justify-center mr-2">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+                )}
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium text-white group-hover:text-blue-200">
+                    {user?.firstName || user?.username || "User"}
+                  </span>
+                  <span className="text-[10px] text-gray-400/80">
+                    {user?.primaryEmailAddress?.emailAddress}
+                  </span>
+                </div>
+              </div>
+            </button>
+            <button
+              onClick={() => {
+                setInitialActiveTab("api");
+                setIsSettingsOpen(true);
+              }}
+              className="p-1.5 rounded-full hover:bg-blue-800 text-white transition-colors ml-2"
+              title="Settings"
+            >
+              <Settings className="h-5 w-5" />
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="text-center">
+              <div className="h-12 w-12 mx-auto rounded-full bg-blue-700 flex items-center justify-center mb-2">
+                <User className="h-6 w-6 text-white" />
+              </div>
+              <h4 className="text-sm font-medium text-white">
+                Welcome to EchoMind
+              </h4>
+              <p className="text-xs text-gray-400 mt-1">
+                Sign in to access all features
+              </p>
             </div>
-            <div className="flex flex-col">
-              <span className="text-white text-sm font-medium">John Doe</span>
-              <span className="text-gray-400 text-xs">Free Plan</span>
+            <div className="space-y-2">
+              <button
+                onClick={() => openSignIn()}
+                className="w-full flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                Sign In
+              </button>
+              <button
+                onClick={() => openSignUp()}
+                className="w-full flex items-center justify-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Create Account
+              </button>
             </div>
           </div>
-          <button
-            className="p-1.5 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors"
-            aria-label="Settings"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-          </button>
-        </div>
+        )}
       </div>
+
+      {/* Settings Popup */}
+      <SettingsPopup
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        initialActiveTab={initialActiveTab}
+      />
     </div>
   );
 };

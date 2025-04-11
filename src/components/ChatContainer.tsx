@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import ChatMessage, { MessageRole } from "./ChatMessage";
 import ChatInput from "./ChatInput";
-import ApiKeyInput from "./ApiKeyInput";
 import { sendMessageToOpenRouter, availableModels } from "@/lib/openRouter";
 import { toast } from "sonner";
 import ModelSelector from "./ModelSelector";
+import { Share2, Download } from "lucide-react";
 
 interface Message {
   id: string;
@@ -186,71 +186,102 @@ const ChatContainer: React.FC = () => {
   const selectedModelName =
     availableModels.find((m) => m.id === selectedModel)?.name || "AI";
 
+  const handleShareChat = async () => {
+    try {
+      // Create a shareable link with the chat ID
+      const shareableLink = `${window.location.origin}?chat=${chatId}`;
+
+      // Try to use the Web Share API if available
+      if (navigator.share) {
+        await navigator.share({
+          title: "Chat with EchoMind",
+          text: "Check out my conversation with EchoMind AI",
+          url: shareableLink,
+        });
+      } else {
+        // Fallback to copying to clipboard
+        await navigator.clipboard.writeText(shareableLink);
+        toast.success("Chat link copied to clipboard!");
+      }
+    } catch (error) {
+      console.error("Error sharing chat:", error);
+      toast.error("Failed to share chat");
+    }
+  };
+
+  const handleExportChat = () => {
+    try {
+      // Create a formatted export of the chat
+      const chatExport = messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+        timestamp: msg.timestamp,
+      }));
+
+      // Create and download the file
+      const blob = new Blob([JSON.stringify(chatExport, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `chat-${chatId}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast.success("Chat exported successfully!");
+    } catch (error) {
+      console.error("Error exporting chat:", error);
+      toast.error("Failed to export chat");
+    }
+  };
+
   return (
-    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-white">
-      <ApiKeyInput />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex justify-start p-4">
+    <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
+      {/* Header */}
+      <div className="flex items-center justify-between py-0 px-4">
+        <div className="flex items-center">
           <ModelSelector
             selectedModel={selectedModel}
             onModelChange={handleModelChange}
           />
         </div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={handleShareChat}
+            className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <Share2 className="h-4 w-4" />
+          </button>
+          <button
+            onClick={handleExportChat}
+            className="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <Download className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
 
-        <div className="flex-1 overflow-y-auto">
-          {messages.length <= 1 ? (
-            <div className="flex flex-col items-center justify-center h-[60vh]">
-              <div className="h-16 w-16 rounded-full bg-indigo-100 flex items-center justify-center mb-6">
-                <div className="h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg">E</span>
-                </div>
-              </div>
-              <h1 className="text-2xl font-semibold text-gray-800 mb-1">
-                How can I help today?
-              </h1>
-              <p className="text-gray-500 mb-8 text-center max-w-md">
-                Ask me anything or try an example like "Write a blog post about
-                AI"
-              </p>
-            </div>
-          ) : (
-            <div className="flex-1">
-              {messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  content={message.content}
-                  role={message.role}
-                  timestamp={message.timestamp}
-                />
-              ))}
-            </div>
-          )}
-
-          {isLoading && (
-            <div className="py-6 bg-white animate-pulse">
-              <div className="max-w-3xl mx-auto px-4 sm:px-6">
-                <div className="flex items-start">
-                  <div className="mr-4 mt-1">
-                    <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center">
-                      <span className="text-white font-semibold text-sm">
-                        E
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
-                    <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="max-w-3xl mx-auto space-y-4">
+          {messages.map((message) => (
+            <ChatMessage
+              key={message.id}
+              content={message.content}
+              role={message.role}
+              timestamp={message.timestamp}
+            />
+          ))}
           <div ref={messagesEndRef} />
         </div>
+      </div>
 
-        <div className="sticky bottom-0">
+      {/* Input */}
+      <div className=" py-0 px-4">
+        <div className="max-w-3xl mx-auto">
           <ChatInput
             onSendMessage={handleSendMessage}
             isDisabled={isLoading}

@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { availableModels, ModelOption } from "@/lib/openRouter";
+import { Sparkles } from "lucide-react";
 
 interface ModelSelectorProps {
   selectedModel: string;
@@ -22,10 +23,11 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({
     availableModels.find((model) => model.id === selectedModel)?.name || "";
 
   return (
-    <div className="py-4 px-4">
-      <div className="inline-block rounded-full bg-blue-600 px-3 py-1 shadow-sm">
+    <div className="py-2">
+      <div className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-3 py-1.5 shadow-sm">
+        <Sparkles className="h-4 w-4 text-white mr-2" />
         <Select value={selectedModel} onValueChange={onModelChange}>
-          <SelectTrigger className="w-[180px] border-none bg-transparent text-white">
+          <SelectTrigger className="w-[160px] border-none bg-transparent text-white font-medium focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
             <SelectValue placeholder="Select Model">
               {selectedModelName}
             </SelectValue>

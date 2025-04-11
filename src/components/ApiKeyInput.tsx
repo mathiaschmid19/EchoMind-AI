@@ -1,84 +1,97 @@
+import React, { useState, useEffect } from "react";
+import { Eye, EyeOff, Key } from "lucide-react";
+import { toast } from "sonner";
 
-import React, { useState, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { AlertCircle, CheckCircle } from 'lucide-react';
-
-const ApiKeyInput = () => {
-  const [apiKey, setApiKey] = useState<string>('');
-  const [isKeySet, setIsKeySet] = useState<boolean>(false);
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+const ApiKeyInput: React.FC = () => {
+  const [apiKey, setApiKey] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
-    const savedKey = localStorage.getItem('openrouter_api_key');
-    if (savedKey) {
-      setApiKey(savedKey);
-      setIsKeySet(true);
-    } else {
-      setIsVisible(true);
+    // Load API key from localStorage on component mount
+    const savedApiKey = localStorage.getItem("openrouter_api_key");
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+      setIsSaved(true);
     }
   }, []);
 
-  const handleSaveKey = () => {
-    if (apiKey.trim()) {
-      localStorage.setItem('openrouter_api_key', apiKey.trim());
-      setIsKeySet(true);
-      setIsVisible(false);
+  const handleSave = () => {
+    if (!apiKey.trim()) {
+      toast.error("Please enter an API key");
+      return;
+    }
+
+    try {
+      localStorage.setItem("openrouter_api_key", apiKey);
+      setIsSaved(true);
+      toast.success("API key saved successfully!");
+    } catch (error) {
+      console.error("Error saving API key:", error);
+      toast.error("Failed to save API key");
     }
   };
 
-  const handleResetKey = () => {
-    localStorage.removeItem('openrouter_api_key');
-    setApiKey('');
-    setIsKeySet(false);
-    setIsVisible(true);
+  const handleClear = () => {
+    try {
+      localStorage.removeItem("openrouter_api_key");
+      setApiKey("");
+      setIsSaved(false);
+      toast.success("API key cleared successfully!");
+    } catch (error) {
+      console.error("Error clearing API key:", error);
+      toast.error("Failed to clear API key");
+    }
   };
 
-  if (!isVisible && isKeySet) {
-    return (
-      <div className="fixed top-4 right-4 z-50">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={() => setIsVisible(true)}
-          className="flex items-center gap-1"
-        >
-          <CheckCircle className="h-4 w-4 text-green-500" />
-          <span>API Key Set</span>
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <div className={`fixed top-4 right-4 z-50 bg-white p-4 rounded-md shadow-lg border border-gray-200 ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'} transition-opacity duration-200`}>
-      <div className="flex flex-col gap-2 max-w-xs">
-        <h3 className="font-medium flex items-center gap-1">
-          <AlertCircle className="h-4 w-4 text-amber-500" />
-          OpenRouter API Key
-        </h3>
-        <p className="text-xs text-gray-500">Enter your OpenRouter API key to enable AI responses.</p>
-        <div className="flex gap-2">
-          <Input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder="sk_or_..."
-            className="text-xs"
-          />
-          <Button size="sm" onClick={handleSaveKey}>Save</Button>
+    <div className="space-y-4">
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <Key className="h-5 w-5 text-gray-400" />
         </div>
-        {isKeySet && (
-          <Button variant="ghost" size="sm" onClick={handleResetKey} className="text-xs">
-            Reset Key
-          </Button>
-        )}
-        <p className="text-xs text-gray-400 mt-1">
-          <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-            Get an API key →
-          </a>
-        </p>
+        <input
+          type={isVisible ? "text" : "password"}
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          placeholder="Enter your OpenRouter API key"
+          className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <button
+            type="button"
+            onClick={() => setIsVisible(!isVisible)}
+            className="text-gray-400 hover:text-gray-500 focus:outline-none"
+          >
+            {isVisible ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
+          </button>
+        </div>
       </div>
+
+      <div className="flex justify-end space-x-2">
+        <button
+          onClick={handleClear}
+          className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          Clear
+        </button>
+        <button
+          onClick={handleSave}
+          className="px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          {isSaved ? "Update" : "Save"}
+        </button>
+      </div>
+
+      {isSaved && (
+        <div className="mt-2 text-sm text-green-600">
+          API key is saved and ready to use
+        </div>
+      )}
     </div>
   );
 };

@@ -89,25 +89,27 @@ const ChatInput: React.FC<ChatInputProps> = ({
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask anything... (Press Enter to send, Ctrl+Enter for new line)"
-            className={`w-full px-4 pr-12 border-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none min-h-[44px] max-h-[200px] py-3 ${
-              isFocused ? "py-4" : "py-3"
-            }`}
+            placeholder={`Message ${modelName}...`}
+            className={`w-full p-2 pr-10 rounded-lg border resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all ${
+              isFocused
+                ? "border-blue-500 dark:border-blue-400"
+                : "border-gray-200 dark:border-gray-700"
+            } ${
+              isEmpty ? "h-16" : "h-12"
+            } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 text-left`}
             disabled={isDisabled}
-            autoFocus
-            rows={1}
           />
           <button
             type="submit"
-            className={`absolute right-3 top-1/2 transform -translate-y-1/2 rounded-lg p-1 ${
-              message.trim() && !isDisabled
-                ? "bg-blue-500 text-white hover:bg-blue-600"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
             disabled={!message.trim() || isDisabled}
+            className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg transition-colors ${
+              message.trim() && !isDisabled
+                ? "text-blue-500 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-gray-700"
+                : "text-gray-400 dark:text-gray-600 cursor-not-allowed"
+            }`}
           >
             <SendHorizonal className="h-5 w-5" />
           </button>

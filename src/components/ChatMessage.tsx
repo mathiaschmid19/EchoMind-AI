@@ -140,7 +140,7 @@ const formatText = (text: string, isUser: boolean) => {
         <h3
           key={index}
           className={`text-base leading-6 font-bold my-4 ${
-            isUser ? "text-white" : "text-gray-800"
+            isUser ? "text-white" : "text-gray-800 dark:text-white"
           }`}
         >
           {paragraph.slice(4)}
@@ -154,7 +154,7 @@ const formatText = (text: string, isUser: boolean) => {
         <h4
           key={index}
           className={`text-sm leading-6 font-semibold my-3 ${
-            isUser ? "text-white" : "text-gray-800"
+            isUser ? "text-white" : "text-gray-800 dark:text-white"
           }`}
         >
           {paragraph.slice(5)}
@@ -168,7 +168,7 @@ const formatText = (text: string, isUser: boolean) => {
         <p
           key={index}
           className={`my-2 font-bold ${
-            isUser ? "text-white" : "text-gray-800"
+            isUser ? "text-white" : "text-gray-800 dark:text-white"
           }`}
         >
           {paragraph.slice(2, -2)}
@@ -182,8 +182,8 @@ const formatText = (text: string, isUser: boolean) => {
       return (
         <code
           key={index}
-          className={`px-1.5 py-0.5 rounded bg-gray-100 font-mono text-sm ${
-            isUser ? "text-white" : "text-gray-800"
+          className={`px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 font-mono text-sm ${
+            isUser ? "text-white" : "text-gray-800 dark:text-white"
           }`}
         >
           {code}
@@ -212,16 +212,16 @@ const formatText = (text: string, isUser: boolean) => {
         <div key={index} className="my-4 overflow-x-auto">
           <table
             className={`min-w-full border-collapse ${
-              isUser ? "text-white" : "text-gray-800"
+              isUser ? "text-white" : "text-gray-800 dark:text-white"
             }`}
           >
             <thead>
-              <tr className="border-b border-gray-200">
+              <tr className="border-b border-gray-200 dark:border-gray-700">
                 {header.map((cell, i) => (
                   <th
                     key={i}
                     className={`px-4 py-2 text-left font-semibold text-sm ${
-                      isUser ? "text-white" : "text-gray-800"
+                      isUser ? "text-white" : "text-gray-800 dark:text-white"
                     }`}
                   >
                     {cell.replace(/\*\*/g, "")}
@@ -233,11 +233,11 @@ const formatText = (text: string, isUser: boolean) => {
               {rows.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className={`border-b border-gray-200 ${
+                  className={`border-b border-gray-200 dark:border-gray-700 ${
                     rowIndex % 2 === 0
                       ? isUser
                         ? "bg-blue-600/10"
-                        : "bg-gray-50"
+                        : "bg-gray-50 dark:bg-gray-700/50"
                       : ""
                   }`}
                 >
@@ -245,7 +245,7 @@ const formatText = (text: string, isUser: boolean) => {
                     <td
                       key={cellIndex}
                       className={`px-4 py-2 text-sm ${
-                        isUser ? "text-white" : "text-gray-800"
+                        isUser ? "text-white" : "text-gray-800 dark:text-white"
                       }`}
                     >
                       {cell.replace(/\*\*/g, "")}
@@ -265,7 +265,12 @@ const formatText = (text: string, isUser: boolean) => {
       return (
         <ul key={index} className="list-disc list-inside my-2 space-y-1">
           {items.map((item, i) => (
-            <li key={i} className={isUser ? "text-white" : "text-gray-800"}>
+            <li
+              key={i}
+              className={
+                isUser ? "text-white" : "text-gray-800 dark:text-white"
+              }
+            >
               {item.replace(/^[-*]\s+/, "")}
             </li>
           ))}
@@ -290,7 +295,9 @@ const formatText = (text: string, isUser: boolean) => {
     return (
       <p
         key={index}
-        className={`my-2 ${isUser ? "text-white" : "text-gray-800"}`}
+        className={`my-2 ${
+          isUser ? "text-white" : "text-gray-800 dark:text-white"
+        }`}
       >
         {formattedParagraph}
       </p>
@@ -398,77 +405,41 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   role,
   timestamp,
 }) => {
-  const isUser = role === "user";
   const [copied, setCopied] = useState(false);
+  const isUser = role === "user";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
     setCopied(true);
-    toast.success("Message copied to clipboard!");
+    toast.success("Message copied to clipboard");
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="py-4 bg-white animate-fade-in">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
-        <div
-          className={`flex items-start ${
-            isUser ? "flex-row-reverse" : "flex-row"
-          }`}
-        >
-          {/* Avatar */}
-          <div className={`mt-1 ${isUser ? "ml-4" : "mr-4"}`}>
-            {!isUser ? (
-              <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">A</span>
-              </div>
-            ) : (
-              <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                <User className="h-4 w-4 text-gray-600" />
-              </div>
-            )}
-          </div>
-
-          {/* Message content */}
-          <div className={`flex-1 ${isUser ? "text-right" : "text-left"}`}>
-            <div
-              className={`flex items-center mb-1 ${
-                isUser ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div className="font-medium text-sm text-gray-800">
-                {!isUser ? "EchoMind" : "You"}
-              </div>
-              {timestamp && (
-                <div className="text-xs text-gray-500 ml-2">{timestamp}</div>
-              )}
-            </div>
-            <div
-              className={`inline-block text-sm relative ${
-                isUser
-                  ? "bg-blue-500 text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl px-4 py-2 max-w-[80%]"
-                  : "bg-gray-50 text-gray-800 rounded-tl-xl rounded-tr-xl rounded-br-xl px-4 py-2 border border-gray-200 max-w-[80%]"
-              }`}
-            >
-              {!isUser && (
-                <button
-                  onClick={handleCopy}
-                  className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-200 text-gray-600 transition-colors duration-200"
-                  title="Copy message"
-                >
-                  {copied ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    <Copy className="h-4 w-4" />
-                  )}
-                </button>
-              )}
-              <div className={!isUser ? "pr-8" : ""}>
-                {formatMessage(content, isUser)}
-              </div>
-            </div>
-          </div>
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+      <div
+        className={`flex flex-col p-3 max-w-[100%] ${
+          role === "user"
+            ? "bg-blue-500 text-white"
+            : "bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white"
+        } rounded-lg`}
+      >
+        <div className="prose dark:prose-invert max-w-none">
+          {formatMessage(content, isUser)}
         </div>
+        {!isUser && (
+          <button
+            onClick={handleCopy}
+            className="self-end mt-2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors"
+            title="Copy message"
+          >
+            {copied ? (
+              <Check className="h-3.5 w-3.5" />
+            ) : (
+              <Copy className="h-3.5 w-3.5" />
+            )}
+          </button>
+        )}
       </div>
     </div>
   );
