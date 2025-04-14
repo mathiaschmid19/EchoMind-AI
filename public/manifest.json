@@ -1,0 +1,17 @@
+{
+  "short_name": "EchoMind",
+  "name": "EchoMind - AI Chat Assistant",
+  "description": "A powerful AI chat assistant powered by OpenRouter",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#3B82F6",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary"
+} 

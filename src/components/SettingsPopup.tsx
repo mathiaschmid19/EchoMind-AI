@@ -24,7 +24,16 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
   initialActiveTab = "api",
 }) => {
   const [activeTab, setActiveTab] = useState(initialActiveTab);
-  const { isDarkMode, toggleDarkMode } = useTheme();
+  const {
+    isDarkMode,
+    toggleDarkMode,
+    fontSize,
+    setFontSize,
+    messageDensity,
+    setMessageDensity,
+    chatStyle,
+    setChatStyle,
+  } = useTheme();
   const { isSignedIn } = useAuth();
   const { user } = useUser();
   const { openSignIn, openSignUp, openUserProfile } = useClerk();
@@ -107,31 +116,164 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
 
           <div className="p-6 flex-1 overflow-y-auto">
             {activeTab === "appearance" && (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <h3 className="text-lg font-medium text-gray-800 dark:text-white">
-                  Theme
+                  Appearance
                 </h3>
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center">
-                    {isDarkMode ? (
-                      <Moon className="h-5 w-5 text-gray-700 dark:text-gray-300 mr-3" />
-                    ) : (
-                      <Sun className="h-5 w-5 text-gray-700 dark:text-gray-300 mr-3" />
-                    )}
-                    <span className="text-sm text-gray-700 dark:text-gray-300">
-                      {isDarkMode ? "Dark Mode" : "Light Mode"}
-                    </span>
+                <div className="space-y-6">
+                  {/* Theme Switcher */}
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="p-4">
+                      <h4 className="text-sm font-medium text-gray-800 dark:text-white mb-4">
+                        Theme
+                      </h4>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          {isDarkMode ? (
+                            <Moon className="h-5 w-5 text-gray-700 dark:text-gray-300 mr-3" />
+                          ) : (
+                            <Sun className="h-5 w-5 text-gray-700 dark:text-gray-300 mr-3" />
+                          )}
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
+                            {isDarkMode ? "Dark Mode" : "Light Mode"}
+                          </span>
+                        </div>
+                        <button
+                          onClick={toggleDarkMode}
+                          className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 dark:bg-gray-600"
+                        >
+                          <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ease-in-out ${
+                              isDarkMode ? "translate-x-6" : "translate-x-1"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <button
-                    onClick={toggleDarkMode}
-                    className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200 dark:bg-gray-600"
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                        isDarkMode ? "translate-x-6" : "translate-x-1"
-                      }`}
-                    />
-                  </button>
+
+                  {/* Font Size */}
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="p-4">
+                      <h4 className="text-sm font-medium text-gray-800 dark:text-white mb-4">
+                        Font Size
+                      </h4>
+                      <div className="grid grid-cols-4 gap-2">
+                        <button
+                          onClick={() => setFontSize("small")}
+                          className={`p-3 text-xs font-medium ${
+                            fontSize === "small"
+                              ? "text-white bg-echomind-accent border-transparent"
+                              : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
+                          } rounded-md border transition-colors`}
+                        >
+                          Small
+                        </button>
+                        <button
+                          onClick={() => setFontSize("medium")}
+                          className={`p-3 text-sm font-medium ${
+                            fontSize === "medium"
+                              ? "text-white bg-echomind-accent border-transparent"
+                              : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
+                          } rounded-md border transition-colors`}
+                        >
+                          Medium
+                        </button>
+                        <button
+                          onClick={() => setFontSize("large")}
+                          className={`p-3 text-base font-medium ${
+                            fontSize === "large"
+                              ? "text-white bg-echomind-accent border-transparent"
+                              : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
+                          } rounded-md border transition-colors`}
+                        >
+                          Large
+                        </button>
+                        <button
+                          onClick={() => setFontSize("xlarge")}
+                          className={`p-3 text-lg font-medium ${
+                            fontSize === "xlarge"
+                              ? "text-white bg-echomind-accent border-transparent"
+                              : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
+                          } rounded-md border transition-colors`}
+                        >
+                          X-Large
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Message Density */}
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="p-4">
+                      <h4 className="text-sm font-medium text-gray-800 dark:text-white mb-4">
+                        Message Density
+                      </h4>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          onClick={() => setMessageDensity("compact")}
+                          className={`p-3 text-sm font-medium ${
+                            messageDensity === "compact"
+                              ? "text-white bg-echomind-accent border-transparent"
+                              : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
+                          } rounded-md border transition-colors`}
+                        >
+                          Compact
+                        </button>
+                        <button
+                          onClick={() => setMessageDensity("comfortable")}
+                          className={`p-3 text-sm font-medium ${
+                            messageDensity === "comfortable"
+                              ? "text-white bg-echomind-accent border-transparent"
+                              : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
+                          } rounded-md border transition-colors`}
+                        >
+                          Comfortable
+                        </button>
+                        <button
+                          onClick={() => setMessageDensity("spacious")}
+                          className={`p-3 text-sm font-medium ${
+                            messageDensity === "spacious"
+                              ? "text-white bg-echomind-accent border-transparent"
+                              : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
+                          } rounded-md border transition-colors`}
+                        >
+                          Spacious
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Chat Style */}
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="p-4">
+                      <h4 className="text-sm font-medium text-gray-800 dark:text-white mb-4">
+                        Chat Style
+                      </h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => setChatStyle("modern")}
+                          className={`p-3 text-sm font-medium ${
+                            chatStyle === "modern"
+                              ? "text-white bg-echomind-accent border-transparent"
+                              : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
+                          } rounded-md border transition-colors`}
+                        >
+                          Modern
+                        </button>
+                        <button
+                          onClick={() => setChatStyle("classic")}
+                          className={`p-3 text-sm font-medium ${
+                            chatStyle === "classic"
+                              ? "text-white bg-echomind-accent border-transparent"
+                              : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
+                          } rounded-md border transition-colors`}
+                        >
+                          Classic
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

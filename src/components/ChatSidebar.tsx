@@ -174,17 +174,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
       {/* Sidebar header */}
       <div className="p-4 flex items-center">
         <div className="text-white dark:text-gray-100 font-medium flex items-center">
-          <span className="mr-2">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 2L1 12L12 22L23 12L12 2Z" fill="currentColor" />
-            </svg>
-          </span>
+          <img src="/logo.svg" alt="EchoMind Logo" className="h-6 w-6 mr-2" />
           EchoMind
         </div>
       </div>
@@ -278,7 +268,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
             </button>
             <button
               onClick={() => {
-                setInitialActiveTab("api");
+                setInitialActiveTab("appearance");
                 setIsSettingsOpen(true);
               }}
               className="p-1.5 rounded-full hover:bg-blue-800 text-white transition-colors ml-2"

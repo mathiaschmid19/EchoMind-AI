@@ -1,0 +1,155 @@
+/* Font Sizes */
+:root[data-font-size="small"] {
+  --font-size-base: 0.875rem;
+  --font-size-sm: 0.75rem;
+  --font-size-lg: 1rem;
+  --font-size-xl: 1.125rem;
+}
+
+:root[data-font-size="medium"] {
+  --font-size-base: 1rem;
+  --font-size-sm: 0.875rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+}
+
+:root[data-font-size="large"] {
+  --font-size-base: 1.125rem;
+  --font-size-sm: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.375rem;
+}
+
+:root[data-font-size="xlarge"] {
+  --font-size-base: 1.25rem;
+  --font-size-sm: 1.125rem;
+  --font-size-lg: 1.375rem;
+  --font-size-xl: 1.5rem;
+}
+
+/* Message Density */
+:root[data-density="compact"] {
+  --message-spacing: 0.5rem;
+  --message-padding: 0.75rem;
+  --message-max-width: 85%;
+}
+
+:root[data-density="comfortable"] {
+  --message-spacing: 1rem;
+  --message-padding: 1rem;
+  --message-max-width: 85%;
+}
+
+:root[data-density="spacious"] {
+  --message-spacing: 1.5rem;
+  --message-padding: 1.25rem;
+  --message-max-width: 85%;
+}
+
+/* Chat Styles */
+:root[data-chat-style="modern"] {
+  --message-border-radius: 1.5rem;
+  --message-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --message-bg-user: #3B82F6;
+  --message-bg-assistant: #F9FAFB;
+  --message-border: none;
+  --message-text-user: #FFFFFF;
+  --message-text-assistant: #1F2937;
+}
+
+:root[data-chat-style="classic"] {
+  --message-border-radius: 0.5rem;
+  --message-shadow: none;
+  --message-bg-user: #3B82F6;
+  --message-bg-assistant: #F3F4F6;
+  --message-border: none;
+  --message-text-user: #FFFFFF;
+  --message-text-assistant: #1F2937;
+}
+
+/* Dark Mode Overrides */
+.dark :root[data-chat-style="modern"] {
+  --message-bg-assistant: #1F2937;
+  --message-text-assistant: #FFFFFF;
+}
+
+.dark :root[data-chat-style="classic"] {
+  --message-bg-assistant: #1F2937;
+  --message-text-assistant: #FFFFFF;
+}
+
+/* Apply CSS Variables */
+body {
+  font-size: var(--font-size-base);
+}
+
+.chat-message {
+  margin-bottom: var(--message-spacing);
+  padding: var(--message-padding);
+  border-radius: var(--message-border-radius);
+  box-shadow: var(--message-shadow);
+  border: var(--message-border);
+}
+
+.chat-message.user {
+  background-color: var(--message-bg-user);
+  color: var(--message-text-user);
+}
+
+.chat-message.assistant {
+  background-color: var(--message-bg-assistant);
+  color: var(--message-text-assistant);
+}
+
+/* Typography Classes */
+.text-sm {
+  font-size: var(--font-size-sm);
+}
+
+.text-base {
+  font-size: var(--font-size-base);
+}
+
+.text-lg {
+  font-size: var(--font-size-lg);
+}
+
+.text-xl {
+  font-size: var(--font-size-xl);
+}
+
+/* Prose Overrides */
+.chat-message.user .prose {
+  color: var(--message-text-user);
+}
+
+.chat-message.user .prose code {
+  color: var(--message-text-user);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-message.assistant .prose {
+  color: var(--message-text-assistant);
+}
+
+.chat-message.assistant .prose code {
+  color: var(--message-text-assistant);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Apply font size to all text elements */
+p, span, div, button, input, textarea {
+  font-size: var(--font-size-base);
+}
+
+/* Apply message density to chat container */
+.chat-container {
+  gap: var(--message-spacing);
+}
+
+/* Apply chat style to messages */
+.chat-message {
+  border-radius: var(--message-border-radius);
+  box-shadow: var(--message-shadow);
+  border: var(--message-border);
+} 

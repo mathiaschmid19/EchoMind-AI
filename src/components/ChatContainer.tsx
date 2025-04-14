@@ -280,7 +280,7 @@ const ChatContainer: React.FC = () => {
       </div>
 
       {/* Input */}
-      <div className=" py-0 px-4">
+      <div className="py-0 px-4">
         <div className="max-w-3xl mx-auto">
           <ChatInput
             onSendMessage={handleSendMessage}

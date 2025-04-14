@@ -405,41 +405,43 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   role,
   timestamp,
 }) => {
-  const [copied, setCopied] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const isUser = role === "user";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
-    setCopied(true);
-    toast.success("Message copied to clipboard");
-    setTimeout(() => setCopied(false), 2000);
+    setIsCopied(true);
+    toast.success("Copied to clipboard");
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    <div className={`flex ${isUser ? "justify-end" : "justify-start w-full"}`}>
       <div
-        className={`flex flex-col p-3 max-w-[100%] ${
-          role === "user"
-            ? "bg-blue-500 text-white"
-            : "bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white"
-        } rounded-lg`}
+        className={`chat-message ${role} flex flex-col p-3 rounded-lg ${
+          isUser
+            ? "bg-blue-500 text-white max-w-[85%]"
+            : "bg-gray-50 dark:bg-gray-800 w-full"
+        }`}
       >
-        <div className="prose dark:prose-invert max-w-none">
-          {formatMessage(content, isUser)}
+        <div className="flex items-start justify-between gap-2">
+          <div className="prose dark:prose-invert max-w-none flex-1">
+            {formatMessage(content, isUser)}
+          </div>
+          {!isUser && (
+            <button
+              onClick={handleCopy}
+              className="flex-shrink-0 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors"
+              title="Copy message"
+            >
+              {isCopied ? (
+                <Check className="h-3.5 w-3.5" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
+            </button>
+          )}
         </div>
-        {!isUser && (
-          <button
-            onClick={handleCopy}
-            className="self-end mt-2 p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors"
-            title="Copy message"
-          >
-            {copied ? (
-              <Check className="h-3.5 w-3.5" />
-            ) : (
-              <Copy className="h-3.5 w-3.5" />
-            )}
-          </button>
-        )}
       </div>
     </div>
   );

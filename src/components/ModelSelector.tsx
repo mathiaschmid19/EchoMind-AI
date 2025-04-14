@@ -32,12 +32,18 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({
               {selectedModelName}
             </SelectValue>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
             {availableModels.map((model) => (
-              <SelectItem key={model.id} value={model.id}>
+              <SelectItem
+                key={model.id}
+                value={model.id}
+                className="dark:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+              >
                 <div className="flex flex-col items-start">
-                  <span className="font-medium">{model.name}</span>
-                  <span className="text-xs text-gray-500">
+                  <span className="font-medium dark:text-white">
+                    {model.name}
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
                     {model.description}
                   </span>
                 </div>
