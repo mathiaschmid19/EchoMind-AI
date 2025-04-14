@@ -128,10 +128,24 @@ For commercial use, please contact us at amineouhannou19@gmail.com to purchase a
 - White-label solutions
 - Regular updates
 
+### Full Ownership License
+
+For complete ownership and rights to the application, please contact us at amineouhannou19@gmail.com. The full ownership license includes:
+
+- Complete ownership of the source code
+- Right to sell, modify, or redistribute the application
+- Right to use the code in any project
+- Right to create derivative works
+- No attribution required
+- No restrictions on usage
+- Lifetime access to all future updates
+- Priority support for 1 year
+
 ### Pricing
 
 - Personal Use: Free (MIT License)
 - Commercial License: $299 (one-time payment)
+- Full Ownership License: $999 (one-time payment)
 
 ## Contributing
 
