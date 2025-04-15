@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import SignInPage from "./pages/SignIn";
 import { ClerkProvider, UserProfile } from "@clerk/clerk-react";
 import { rootAuthLoader } from "@clerk/react-router/ssr.server";
+import { SidebarProvider } from "@/context/SidebarContext";
 
 const queryClient = new QueryClient();
 
@@ -47,60 +48,65 @@ const App = () => {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <TooltipProvider>
-          <ClerkProvider
-            publishableKey={clerkPubKey}
-            appearance={{
-              baseTheme: undefined,
-              elements: {
-                formButtonPrimary: "bg-blue-600 hover:bg-blue-700",
-                footerActionLink: "text-blue-600 hover:text-blue-700",
-              },
-            }}
-          >
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/sign-in" element={<SignInPage />} />
-                <Route path="/" element={<Index />} loader={rootAuthLoader} />
-                <Route
-                  path="/user-profile/*"
-                  element={
-                    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-                      <UserProfile
-                        appearance={{
-                          elements: {
-                            navbar: "bg-white dark:bg-gray-800",
-                            navbarButton:
-                              "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
-                            card: "bg-white dark:bg-gray-800 shadow-none border dark:border-gray-700",
-                            headerTitle: "text-gray-900 dark:text-white",
-                            headerSubtitle: "text-gray-600 dark:text-gray-400",
-                            formButtonPrimary: "bg-blue-600 hover:bg-blue-700",
-                            formButtonReset:
-                              "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300",
-                            formFieldInput:
-                              "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600",
-                            formFieldLabel: "text-gray-700 dark:text-gray-300",
-                          },
-                        }}
-                        routing="path"
-                        path="/user-profile"
-                      />
-                    </div>
-                  }
-                />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </ClerkProvider>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <SidebarProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <ClerkProvider
+              publishableKey={clerkPubKey}
+              appearance={{
+                baseTheme: undefined,
+                elements: {
+                  formButtonPrimary: "bg-blue-600 hover:bg-blue-700",
+                  footerActionLink: "text-blue-600 hover:text-blue-700",
+                },
+              }}
+            >
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/sign-in" element={<SignInPage />} />
+                  <Route path="/" element={<Index />} loader={rootAuthLoader} />
+                  <Route
+                    path="/user-profile/*"
+                    element={
+                      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+                        <UserProfile
+                          appearance={{
+                            elements: {
+                              navbar: "bg-white dark:bg-gray-800",
+                              navbarButton:
+                                "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700",
+                              card: "bg-white dark:bg-gray-800 shadow-none border dark:border-gray-700",
+                              headerTitle: "text-gray-900 dark:text-white",
+                              headerSubtitle:
+                                "text-gray-600 dark:text-gray-400",
+                              formButtonPrimary:
+                                "bg-blue-600 hover:bg-blue-700",
+                              formButtonReset:
+                                "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300",
+                              formFieldInput:
+                                "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600",
+                              formFieldLabel:
+                                "text-gray-700 dark:text-gray-300",
+                            },
+                          }}
+                          routing="path"
+                          path="/user-profile"
+                        />
+                      </div>
+                    }
+                  />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </ClerkProvider>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </SidebarProvider>
   );
 };
 

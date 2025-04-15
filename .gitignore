@@ -11,11 +11,25 @@ lerna-debug.log*
 .env
 .env.local
 
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-node_modules
-dist
-dist-ssr
-*.local
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
 
 # Editor directories and files
 .vscode/*

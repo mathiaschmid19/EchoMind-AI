@@ -46,66 +46,74 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl mx-4 overflow-hidden flex h-[600px]">
-        {/* Vertical tabs sidebar */}
-        <div className="w-48 bg-gray-50 dark:bg-gray-700 border-r dark:border-gray-600 flex flex-col">
-          <div className="p-4 border-b dark:border-gray-600">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col md:flex-row h-[90vh] md:h-[600px]">
+        {/* Vertical tabs sidebar - hidden on mobile, shown as horizontal on small screens */}
+        <div className="md:w-48 bg-gray-50 dark:bg-gray-700 border-b md:border-b-0 md:border-r dark:border-gray-600 flex flex-col">
+          <div className="p-4 border-b dark:border-gray-600 flex items-center justify-between md:block">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
               Settings
             </h2>
+            <button
+              onClick={onClose}
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-500 dark:text-gray-400 transition-colors md:hidden"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
-          <div className="py-2 flex-1">
-            <button
-              onClick={() => setActiveTab("appearance")}
-              className={`flex items-center w-full px-4 py-3 text-sm font-medium ${
-                activeTab === "appearance"
-                  ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600 dark:text-blue-400 dark:bg-gray-600 dark:border-blue-400"
-                  : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
-              }`}
-            >
-              <Sun className="h-4 w-4 mr-3" />
-              Appearance
-            </button>
-            <button
-              onClick={() => setActiveTab("account")}
-              className={`flex items-center w-full px-4 py-3 text-sm font-medium ${
-                activeTab === "account"
-                  ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600 dark:text-blue-400 dark:bg-gray-600 dark:border-blue-400"
-                  : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
-              }`}
-            >
-              <User className="h-4 w-4 mr-3" />
-              Account
-            </button>
-            <button
-              onClick={() => setActiveTab("api")}
-              className={`flex items-center w-full px-4 py-3 text-sm font-medium ${
-                activeTab === "api"
-                  ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600 dark:text-blue-400 dark:bg-gray-600 dark:border-blue-400"
-                  : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
-              }`}
-            >
-              <Key className="h-4 w-4 mr-3" />
-              API Key
-            </button>
-            <button
-              onClick={() => setActiveTab("about")}
-              className={`flex items-center w-full px-4 py-3 text-sm font-medium ${
-                activeTab === "about"
-                  ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600 dark:text-blue-400 dark:bg-gray-600 dark:border-blue-400"
-                  : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
-              }`}
-            >
-              <Info className="h-4 w-4 mr-3" />
-              About
-            </button>
+          <div className="py-2 flex-1 overflow-x-auto md:overflow-x-visible">
+            <div className="flex md:flex-col min-w-max md:min-w-0">
+              <button
+                onClick={() => setActiveTab("appearance")}
+                className={`flex items-center px-4 py-3 text-sm font-medium whitespace-nowrap ${
+                  activeTab === "appearance"
+                    ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600 dark:text-blue-400 dark:bg-gray-600 dark:border-blue-400"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
+                }`}
+              >
+                <Sun className="h-4 w-4 mr-3" />
+                Appearance
+              </button>
+              <button
+                onClick={() => setActiveTab("account")}
+                className={`flex items-center px-4 py-3 text-sm font-medium whitespace-nowrap ${
+                  activeTab === "account"
+                    ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600 dark:text-blue-400 dark:bg-gray-600 dark:border-blue-400"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
+                }`}
+              >
+                <User className="h-4 w-4 mr-3" />
+                Account
+              </button>
+              <button
+                onClick={() => setActiveTab("api")}
+                className={`flex items-center px-4 py-3 text-sm font-medium whitespace-nowrap ${
+                  activeTab === "api"
+                    ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600 dark:text-blue-400 dark:bg-gray-600 dark:border-blue-400"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
+                }`}
+              >
+                <Key className="h-4 w-4 mr-3" />
+                API Key
+              </button>
+              <button
+                onClick={() => setActiveTab("about")}
+                className={`flex items-center px-4 py-3 text-sm font-medium whitespace-nowrap ${
+                  activeTab === "about"
+                    ? "text-blue-600 bg-blue-50 border-l-4 border-blue-600 dark:text-blue-400 dark:bg-gray-600 dark:border-blue-400"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600"
+                }`}
+              >
+                <Info className="h-4 w-4 mr-3" />
+                About
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Content area */}
-        <div className="flex-1 flex flex-col">
-          <div className="flex justify-end p-4 border-b dark:border-gray-700">
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex justify-end p-4 border-b dark:border-gray-700 hidden md:flex">
             <button
               onClick={onClose}
               className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors"
@@ -114,13 +122,13 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
             </button>
           </div>
 
-          <div className="p-6 flex-1 overflow-y-auto">
+          <div className="p-4 md:p-6 flex-1 overflow-y-auto">
             {activeTab === "appearance" && (
               <div className="space-y-6">
                 <h3 className="text-lg font-medium text-gray-800 dark:text-white">
                   Appearance
                 </h3>
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {/* Theme Switcher */}
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <div className="p-4">
@@ -158,12 +166,12 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                       <h4 className="text-sm font-medium text-gray-800 dark:text-white mb-4">
                         Font Size
                       </h4>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <button
                           onClick={() => setFontSize("small")}
                           className={`p-3 text-xs font-medium ${
                             fontSize === "small"
-                              ? "text-white bg-echomind-accent border-transparent"
+                              ? "text-white bg-blue-600 border-transparent"
                               : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
                           } rounded-md border transition-colors`}
                         >
@@ -173,7 +181,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                           onClick={() => setFontSize("medium")}
                           className={`p-3 text-sm font-medium ${
                             fontSize === "medium"
-                              ? "text-white bg-echomind-accent border-transparent"
+                              ? "text-white bg-blue-600 border-transparent"
                               : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
                           } rounded-md border transition-colors`}
                         >
@@ -183,7 +191,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                           onClick={() => setFontSize("large")}
                           className={`p-3 text-base font-medium ${
                             fontSize === "large"
-                              ? "text-white bg-echomind-accent border-transparent"
+                              ? "text-white bg-blue-600 border-transparent"
                               : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
                           } rounded-md border transition-colors`}
                         >
@@ -193,7 +201,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                           onClick={() => setFontSize("xlarge")}
                           className={`p-3 text-lg font-medium ${
                             fontSize === "xlarge"
-                              ? "text-white bg-echomind-accent border-transparent"
+                              ? "text-white bg-blue-600 border-transparent"
                               : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
                           } rounded-md border transition-colors`}
                         >
@@ -214,7 +222,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                           onClick={() => setMessageDensity("compact")}
                           className={`p-3 text-sm font-medium ${
                             messageDensity === "compact"
-                              ? "text-white bg-echomind-accent border-transparent"
+                              ? "text-white bg-blue-600 border-transparent"
                               : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
                           } rounded-md border transition-colors`}
                         >
@@ -224,7 +232,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                           onClick={() => setMessageDensity("comfortable")}
                           className={`p-3 text-sm font-medium ${
                             messageDensity === "comfortable"
-                              ? "text-white bg-echomind-accent border-transparent"
+                              ? "text-white bg-blue-600 border-transparent"
                               : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
                           } rounded-md border transition-colors`}
                         >
@@ -234,7 +242,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                           onClick={() => setMessageDensity("spacious")}
                           className={`p-3 text-sm font-medium ${
                             messageDensity === "spacious"
-                              ? "text-white bg-echomind-accent border-transparent"
+                              ? "text-white bg-blue-600 border-transparent"
                               : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
                           } rounded-md border transition-colors`}
                         >
@@ -255,7 +263,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                           onClick={() => setChatStyle("modern")}
                           className={`p-3 text-sm font-medium ${
                             chatStyle === "modern"
-                              ? "text-white bg-echomind-accent border-transparent"
+                              ? "text-white bg-blue-600 border-transparent"
                               : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
                           } rounded-md border transition-colors`}
                         >
@@ -265,7 +273,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                           onClick={() => setChatStyle("classic")}
                           className={`p-3 text-sm font-medium ${
                             chatStyle === "classic"
-                              ? "text-white bg-echomind-accent border-transparent"
+                              ? "text-white bg-blue-600 border-transparent"
                               : "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-500 dark:hover:border-blue-400"
                           } rounded-md border transition-colors`}
                         >
@@ -287,22 +295,22 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                   {isSignedIn ? (
                     <div>
                       {/* Profile Section */}
-                      <div className="p-6 space-y-6">
+                      <div className="p-4 md:p-6 space-y-6">
                         <div className="space-y-4">
                           <div className="flex items-center space-x-4">
                             {user?.imageUrl ? (
                               <img
                                 src={user.imageUrl}
                                 alt="Profile"
-                                className="h-16 w-16 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-600"
+                                className="h-12 w-12 md:h-16 md:w-16 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-600"
                               />
                             ) : (
-                              <div className="h-16 w-16 rounded-full bg-blue-600 flex items-center justify-center ring-2 ring-gray-200 dark:ring-gray-600">
-                                <User className="h-8 w-8 text-white" />
+                              <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-blue-600 flex items-center justify-center ring-2 ring-gray-200 dark:ring-gray-600">
+                                <User className="h-6 w-6 md:h-8 md:w-8 text-white" />
                               </div>
                             )}
                             <div>
-                              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                              <h4 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">
                                 {user?.firstName || user?.username || "User"}
                               </h4>
                               <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -312,7 +320,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                           </div>
                           <button
                             onClick={() => openUserProfile()}
-                            className="w-full flex items-center justify-center p-3 text-sm font-medium text-white bg-echomind-accent hover:bg-blue-500 rounded-md transition-colors"
+                            className="w-full flex items-center justify-center p-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
                           >
                             Edit Profile
                           </button>
@@ -320,7 +328,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                       </div>
 
                       {/* Sign Out Button */}
-                      <div className="px-6 pb-6">
+                      <div className="px-4 md:px-6 pb-4 md:pb-6">
                         <SignOutButton>
                           <button className="w-full flex items-center justify-center px-4 py-2.5 text-sm font-medium text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20 rounded-md transition-colors">
                             <LogOut className="h-4 w-4 mr-2" />
@@ -330,7 +338,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-6">
+                    <div className="p-4 md:p-6 space-y-6">
                       <div className="text-center">
                         <User className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500" />
                         <h4 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">

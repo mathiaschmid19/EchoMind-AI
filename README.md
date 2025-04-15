@@ -145,7 +145,7 @@ For complete ownership and rights to the application, please contact us at amine
 
 - Personal Use: Free (MIT License)
 - Commercial License: $299 (one-time payment)
-- Full Ownership License: $2999 (one-time payment)
+- Full Ownership License: $999 (one-time payment)
 
 ## Contributing
 

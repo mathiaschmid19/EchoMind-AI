@@ -3,6 +3,8 @@ import { User, Copy, Check } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { toast } from "sonner";
+import { useSidebar } from "@/context/SidebarContext";
+import { cn } from "@/lib/utils";
 
 export type MessageRole = "user" | "assistant";
 
@@ -407,6 +409,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 }) => {
   const [isCopied, setIsCopied] = useState(false);
   const isUser = role === "user";
+  const { isCollapsed } = useSidebar();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
@@ -418,11 +421,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start w-full"}`}>
       <div
-        className={`chat-message ${role} flex flex-col p-3 rounded-lg ${
+        className={cn(
+          "chat-message",
+          role,
+          "flex flex-col p-3 rounded-lg",
           isUser
-            ? "bg-blue-500 text-white max-w-[85%]"
-            : "bg-gray-50 dark:bg-gray-800 w-full"
-        }`}
+            ? "bg-blue-500 text-white"
+            : "bg-gray-50 dark:bg-gray-800 w-full",
+          isCollapsed ? "max-w-[95%]" : "max-w-[85%]"
+        )}
       >
         <div className="flex items-start justify-between gap-2">
           <div className="prose dark:prose-invert max-w-none flex-1">

@@ -6,12 +6,24 @@ import {
   Trash2,
   Settings,
   LogIn,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import SettingsPopup from "./SettingsPopup";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useClerk } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
+import { useSidebar } from "@/context/SidebarContext";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface ChatHistoryItem {
   id: string;
@@ -37,6 +49,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
   const [recentChats, setRecentChats] = useState<ChatHistoryItem[]>([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [initialActiveTab, setInitialActiveTab] = useState("api");
+  const { isCollapsed, toggleSidebar, isMobile } = useSidebar();
   const { isSignedIn } = useAuth();
   const { user } = useUser();
   const { openSignIn, openSignUp } = useClerk();
@@ -169,116 +182,248 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
     }
   };
 
-  return (
-    <div className="w-64 bg-blue-900 dark:bg-gray-800 h-screen flex flex-col">
-      {/* Sidebar header */}
-      <div className="p-4 flex items-center">
-        <div className="text-white dark:text-gray-100 font-medium flex items-center">
-          <img src="/logo.svg" alt="EchoMind Logo" className="h-6 w-6 mr-2" />
-          EchoMind
-        </div>
-      </div>
-
-      {/* New chat button */}
-      <div className="p-2">
-        <button
-          onClick={handleNewChat}
-          className="flex items-center justify-center w-full rounded-md bg-blue-700 dark:bg-blue-600 text-white py-2 px-3 text-sm hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors"
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
+      {/* Top section with header and new chat */}
+      <div className="flex-none">
+        {/* Sidebar header with collapse button */}
+        <div
+          className={cn(
+            "p-4 flex items-center",
+            isCollapsed && !isMobile ? "justify-center" : "justify-between"
+          )}
         >
-          <PlusCircle className="h-4 w-4 mr-2" /> New chat
-        </button>
-      </div>
+          {(!isCollapsed || isMobile) && !isMobile && (
+            <div className="text-white dark:text-gray-100 font-medium flex items-center">
+              <img
+                src="/logo.svg"
+                alt="EchoMind Logo"
+                className="h-6 w-6 mr-2"
+              />
+              EchoMind
+            </div>
+          )}
+          {!isMobile && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={toggleSidebar}
+                    className="p-1.5 rounded-full hover:bg-blue-800/50 text-white transition-colors"
+                    title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                  >
+                    {isCollapsed ? (
+                      <ChevronRight size={18} />
+                    ) : (
+                      <ChevronLeft size={18} />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  {isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
 
-      {/* Chats section */}
-      <div className="mt-4 px-2">
-        <div className="flex items-center px-2 mb-2">
-          <MessageSquare className="h-4 w-4 text-gray-400 dark:text-gray-500 mr-2" />
-          <span className="text-gray-400 dark:text-gray-500 text-sm">
-            Chats
-          </span>
+        {/* New chat button */}
+        <div className="p-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleNewChat}
+                  className={cn(
+                    "flex items-center justify-center w-full rounded-md bg-blue-700 dark:bg-blue-600 text-white py-2 transition-colors",
+                    isCollapsed && !isMobile
+                      ? "px-2 hover:bg-blue-600"
+                      : "px-3 hover:bg-blue-600 dark:hover:bg-blue-500"
+                  )}
+                >
+                  <PlusCircle
+                    className={cn(
+                      "h-4 w-4",
+                      (!isCollapsed || isMobile) && "mr-2"
+                    )}
+                  />
+                  {(!isCollapsed || isMobile) && "New chat"}
+                </button>
+              </TooltipTrigger>
+              {isCollapsed && !isMobile && (
+                <TooltipContent side="right">New chat</TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
+        {/* Chats section header */}
+        <div className={cn("mt-4", isCollapsed && !isMobile ? "px-2" : "px-2")}>
+          {(!isCollapsed || isMobile) && (
+            <div className="flex items-center px-2 mb-2">
+              <MessageSquare className="h-4 w-4 text-gray-400 dark:text-gray-500 mr-2" />
+              <span className="text-gray-400 dark:text-gray-500 text-sm">
+                Chats
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Chat history */}
-      <div className="flex-1 overflow-y-auto chat-history">
+      {/* Chat history - takes remaining space */}
+      <div
+        className={cn(
+          "flex-1 overflow-y-auto chat-history min-h-0",
+          isCollapsed && !isMobile ? "px-2" : ""
+        )}
+      >
         {recentChats.length > 0 ? (
           recentChats.map((chat) => (
-            <div
-              key={chat.id}
-              onClick={() => switchToChat(chat.id)}
-              className={cn(
-                "px-2 py-2 mx-2 rounded-md text-sm mb-1 cursor-pointer flex justify-between items-center group",
-                chat.isActive
-                  ? "bg-white/10 text-white"
-                  : "text-gray-400 hover:bg-white/5"
-              )}
-            >
-              <span className="truncate flex-1">{chat.title}</span>
-              <button
-                onClick={(e) => deleteChat(e, chat.id)}
-                className={cn(
-                  "text-gray-400 hover:text-red-400 transition-colors p-1 rounded focus:outline-none",
-                  !chat.isActive && "opacity-0 group-hover:opacity-100"
+            <TooltipProvider key={chat.id}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    onClick={() => switchToChat(chat.id)}
+                    className={cn(
+                      "rounded-md text-sm mb-1 cursor-pointer flex items-center group",
+                      isCollapsed && !isMobile
+                        ? "justify-center p-2"
+                        : "justify-between px-2 py-2 mx-2",
+                      chat.isActive
+                        ? "bg-white/10 text-white"
+                        : "text-gray-400 hover:bg-white/5"
+                    )}
+                  >
+                    {isCollapsed && !isMobile ? (
+                      <MessageSquare className="h-4 w-4" />
+                    ) : (
+                      <>
+                        <span className="truncate flex-1">{chat.title}</span>
+                        <button
+                          onClick={(e) => deleteChat(e, chat.id)}
+                          className={cn(
+                            "text-gray-400 hover:text-red-400 transition-colors p-1 rounded focus:outline-none",
+                            !chat.isActive &&
+                              "opacity-0 group-hover:opacity-100"
+                          )}
+                          aria-label="Delete chat"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </TooltipTrigger>
+                {isCollapsed && !isMobile && (
+                  <TooltipContent side="right">{chat.title}</TooltipContent>
                 )}
-                aria-label="Delete chat"
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
+              </Tooltip>
+            </TooltipProvider>
           ))
         ) : (
-          <div className="px-4 py-2 text-gray-400 text-sm italic">
-            No chat history yet
+          <div
+            className={cn(
+              "text-gray-400 text-sm italic",
+              isCollapsed && !isMobile ? "text-center" : "px-4 py-2"
+            )}
+          >
+            {isCollapsed && !isMobile ? "•" : "No chat history yet"}
           </div>
         )}
       </div>
 
-      {/* User section */}
-      <div className="p-4 border-t border-blue-800">
+      {/* User section - fixed at bottom */}
+      <div
+        className={cn(
+          "flex-none p-4 border-t border-blue-800 mt-auto",
+          isCollapsed && !isMobile && "px-2"
+        )}
+      >
         {isSignedIn ? (
           <div className="flex items-center justify-start">
-            <button
-              onClick={() => {
-                setInitialActiveTab("account");
-                setIsSettingsOpen(true);
-              }}
-              className="flex items-center group hover:bg-blue-800/30 rounded-lg p-2 -ml-2 transition-colors w-full"
-            >
-              <div className="flex items-center">
-                {user?.imageUrl ? (
-                  <img
-                    src={user.imageUrl}
-                    alt="Profile"
-                    className="h-8 w-8 rounded-full object-cover mr-2"
-                  />
-                ) : (
-                  <div className="h-8 w-8 rounded-full bg-blue-700 flex items-center justify-center mr-2">
-                    <User className="h-4 w-4 text-white" />
-                  </div>
-                )}
-                <div className="flex flex-col items-start">
-                  <span className="text-sm font-medium text-white group-hover:text-blue-200">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => {
+                      setInitialActiveTab("account");
+                      setIsSettingsOpen(true);
+                    }}
+                    className={cn(
+                      "flex items-center group hover:bg-blue-800/30 rounded-lg transition-colors w-full",
+                      isCollapsed && !isMobile
+                        ? "justify-center p-2"
+                        : "p-2 -ml-2"
+                    )}
+                  >
+                    <div className="flex items-center">
+                      {user?.imageUrl ? (
+                        <img
+                          src={user.imageUrl}
+                          alt="Profile"
+                          className={cn(
+                            "rounded-full object-cover",
+                            isCollapsed && !isMobile
+                              ? "h-8 w-8"
+                              : "h-8 w-8 mr-2"
+                          )}
+                        />
+                      ) : (
+                        <div
+                          className={cn(
+                            "rounded-full bg-blue-700 flex items-center justify-center",
+                            isCollapsed && !isMobile
+                              ? "h-8 w-8"
+                              : "h-8 w-8 mr-2"
+                          )}
+                        >
+                          <User className="h-4 w-4 text-white" />
+                        </div>
+                      )}
+                      {(!isCollapsed || isMobile) && (
+                        <div className="flex flex-col items-start">
+                          <span className="text-sm font-medium text-white group-hover:text-blue-200">
+                            {user?.firstName || user?.username || "User"}
+                          </span>
+                          <span className="text-[10px] text-gray-400/80">
+                            {user?.primaryEmailAddress?.emailAddress}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                </TooltipTrigger>
+                {isCollapsed && !isMobile && (
+                  <TooltipContent side="right">
                     {user?.firstName || user?.username || "User"}
-                  </span>
-                  <span className="text-[10px] text-gray-400/80">
-                    {user?.primaryEmailAddress?.emailAddress}
-                  </span>
-                </div>
-              </div>
-            </button>
-            <button
-              onClick={() => {
-                setInitialActiveTab("appearance");
-                setIsSettingsOpen(true);
-              }}
-              className="p-1.5 rounded-full hover:bg-blue-800 text-white transition-colors ml-2"
-              title="Settings"
-            >
-              <Settings className="h-5 w-5" />
-            </button>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+            {(!isCollapsed || isMobile) && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => {
+                        setInitialActiveTab("appearance");
+                        setIsSettingsOpen(true);
+                      }}
+                      className="p-1.5 rounded-full hover:bg-blue-800 text-white transition-colors ml-2"
+                      title="Settings"
+                    >
+                      <Settings className="h-5 w-5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Settings</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
           </div>
         ) : (
-          <div className="space-y-3">
+          <div
+            className={cn("space-y-3", isCollapsed && !isMobile && "hidden")}
+          >
             <div className="text-center">
               <div className="h-12 w-12 mx-auto rounded-full bg-blue-700 flex items-center justify-center mb-2">
                 <User className="h-6 w-6 text-white" />
@@ -315,6 +460,50 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ onNewChat }) => {
         onClose={() => setIsSettingsOpen(false)}
         initialActiveTab={initialActiveTab}
       />
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <Sheet>
+        <SheetTrigger asChild>
+          <button className="fixed top-4 left-4 z-50 p-2.5 rounded-full bg-blue-900/80 dark:bg-gray-800/80 text-white hover:bg-blue-800 dark:hover:bg-gray-700 transition-colors backdrop-blur-sm">
+            <Menu className="h-5 w-5" />
+          </button>
+        </SheetTrigger>
+        <SheetContent
+          side="left"
+          className="p-0 w-72 bg-blue-900 dark:bg-gray-800 border-r border-blue-800 transition-transform duration-500 ease-in-out flex flex-col h-full"
+        >
+          <div className="flex items-center justify-between p-4 border-b border-blue-800">
+            <div className="text-white dark:text-gray-100 font-medium flex items-center">
+              <img
+                src="/logo.svg"
+                alt="EchoMind Logo"
+                className="h-6 w-6 mr-2"
+              />
+              EchoMind
+            </div>
+            <SheetTrigger asChild>
+              <button className="p-2.5 rounded-full hover:bg-blue-800/50 dark:hover:bg-gray-700/50 text-white transition-colors">
+                <X className="h-5 w-5" />
+              </button>
+            </SheetTrigger>
+          </div>
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "bg-blue-900 dark:bg-gray-800 h-screen flex flex-col transition-all duration-500 ease-in-out",
+        isCollapsed ? "w-16" : "w-64"
+      )}
+    >
+      <SidebarContent />
     </div>
   );
 };
