@@ -23,7 +23,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({
     availableModels.find((model) => model.id === selectedModel)?.name || "";
 
   return (
-    <div className="py-2">
+    <div className="py-2 flex justify-end">
       <div className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-3 py-1.5 shadow-sm">
         <Sparkles className="h-4 w-4 text-white mr-2" />
         <Select value={selectedModel} onValueChange={onModelChange}>
