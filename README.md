@@ -20,7 +20,6 @@ EchoMind is a modern, feature-rich AI chat assistant powered by OpenRouter. It p
 
 - Node.js (v16 or higher)
 - npm (v7 or higher)
-- OpenRouter API Key
 - Clerk Account
 
 ### Installation
@@ -41,21 +40,10 @@ npm install
 3. Create a `.env` file in the root directory:
 
 ```env
-# OpenRouter API Key
-VITE_OPENROUTER_API_KEY=your_api_key_here
-
 # Clerk Authentication
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 VITE_CLERK_SECRET_KEY=your_clerk_secret_key
 ```
-
-### Getting an OpenRouter API Key
-
-1. Visit [OpenRouter](https://openrouter.ai/)
-2. Sign up for an account
-3. Navigate to the API Keys section
-4. Create a new API key
-5. Copy the key and paste it in your `.env` file
 
 ### Setting up Clerk Authentication
 
@@ -66,6 +54,15 @@ VITE_CLERK_SECRET_KEY=your_clerk_secret_key
 5. Add these keys to your `.env` file:
    - `VITE_CLERK_PUBLISHABLE_KEY`: Your Clerk Publishable Key
    - `VITE_CLERK_SECRET_KEY`: Your Clerk Secret Key
+
+### Getting an OpenRouter API Key
+
+1. After logging in to EchoMind, click on the Settings icon in the sidebar
+2. Navigate to the "API Key" tab
+3. Visit [OpenRouter](https://openrouter.ai/) and sign up for an account
+4. Create a new API key in your OpenRouter dashboard
+5. Copy and paste your API key into the settings popup
+6. Click "Save" to store your API key securely
 
 ### Running the Application
 
@@ -123,20 +120,32 @@ This project is available under the MIT License for personal and non-commercial 
 
 ### Commercial License
 
-For commercial use, please contact us at amineouhannou19@gmail.com to discuss licensing options. Commercial licenses include:
+For commercial use, please contact us at amineouhannou19@gmail.com to purchase a commercial license. The commercial license includes:
 
 - Full source code access
 - Priority support
 - Custom branding options
 - White-label solutions
-- Enterprise features
 - Regular updates
+
+### Full Ownership License
+
+For complete ownership and rights to the application, please contact us at amineouhannou19@gmail.com. The full ownership license includes:
+
+- Complete ownership of the source code
+- Right to sell, modify, or redistribute the application
+- Right to use the code in any project
+- Right to create derivative works
+- No attribution required
+- No restrictions on usage
+- Lifetime access to all future updates
+- Priority support for 1 year
 
 ### Pricing
 
 - Personal Use: Free (MIT License)
-- Small Business: $99/year
-- Enterprise: Custom pricing
+- Commercial License: $299 (one-time payment)
+- Full Ownership License: $2999 (one-time payment)
 
 ## Contributing
 
